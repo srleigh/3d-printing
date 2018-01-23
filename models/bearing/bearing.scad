@@ -7,13 +7,13 @@ part = "retainer"; // [all:Everything, outer: Outer Race, inner:Inner Race, roll
 $fn=200; //[20:Fast viewing, 200:Quality printing]
 
 // Outer radius
-outerRadius = 21;  //[14:0.5:50]
+outerRadius = 25;  //[14:0.5:50]
 
 // Inner radius
-innerRadius = outerRadius-11.5;  //[3.5:0.5:45]
+innerRadius = outerRadius-13.5;  //[3.5:0.5:45]
 
 // Width
-width = 14;  //[10:0.5:50]
+width = 15;  //[10:0.5:50]
 
 // Tolerance (extra space between rollers and races)
 tolerance = 0.15;  //[0.05:0.05:0.5]
@@ -32,7 +32,7 @@ raceLipWidth = 2;
 // Height of the small section below/above the race lip
 raceLipChin = 1.5;
 
-rollerHoleRadius = 1.8;
+rollerHoleRadius = 2;
 
 retainerBaseHeight = 0.6;  //[0.2:0.1:1]
 
@@ -53,8 +53,8 @@ module outerHalf(){
         cylinder(width, outerRace, outerRace);
         
         //race lip
-        translate([0,0,raceLipChin - 0.01])
-        cylinder(raceLipWidth, outerRace-raceLipWidth, outerRace);
+        translate([0,0,raceLipChin - 0.01 - 0.5])
+        cylinder(raceLipWidth+0.5, outerRace-raceLipWidth, outerRace);
         
         translate([0,0,-0.02])
         cylinder(raceLipChin+0.02, outerRace-raceLipWidth, outerRace-raceLipWidth);
@@ -88,11 +88,11 @@ module innerHalf(){
             translate([0,0,raceLipChin+raceLipWidth])
             cylinder(width/2 + 1, innerRace, innerRace);
             
-            translate([0,0,raceLipChin-0.01])
-            cylinder(raceLipWidth + 0.01, innerRace+raceLipWidth, innerRace);
+            translate([0,0,raceLipChin-0.01 - 0.5])
+            cylinder(raceLipWidth + 0.01 + 0.5, innerRace+raceLipWidth, innerRace);
             
             translate([0,0,-0.01])
-            cylinder(raceLipChin +0.01, innerRace+raceLipWidth, innerRace+raceLipWidth);
+            cylinder(raceLipChin +0.01 - 0.5, innerRace+raceLipWidth, innerRace+raceLipWidth);
         }
         
         //centre hole
@@ -119,7 +119,7 @@ module inner(){
 }
 
 module rollerHalf(){
-    rollerOuterChamferHeight = raceLipWidth+raceLipChin - rollerVerticalOffset+tolerance*2;
+    rollerOuterChamferHeight = raceLipWidth+raceLipChin - rollerVerticalOffset+tolerance*1;
     difference(){
         union(){
             // center piece
@@ -140,7 +140,6 @@ module rollerHalf(){
         // through hole
         translate([0,0,-1])
         cylinder(width, rollerHoleRadius, rollerHoleRadius);
-        
         
     }
 }
@@ -233,7 +232,7 @@ printPart();
 
 //rollerHalf();
 //roller();
-//translate([0,0,2])
+//translate([0,0,rollerVerticalOffset])
 //rollers();
 
 //inner();
