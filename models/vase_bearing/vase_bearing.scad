@@ -1,14 +1,29 @@
+//all();
+
+//section();
+
+Outer();
+
+//Inner();
+
+//Roller();
+
+//Rollers();
+
+//Retainer(isTop=false);
+//Retainer(isTop=true);
+
 $fn = 200;
 
-outerRadius = 11;
+outerRadius = 11-0.5;
 
-innerRadius = 4;
+innerRadius = 3.5;
 
-wallThickness = 0.4;
+wallThickness = 0.45;
 
 width = 8;
 
-raceLipWidth = 1.5;
+raceLipWidth = 1.2;
 
 raceLipHeight = raceLipWidth * tan(60);
 
@@ -22,7 +37,7 @@ outerRaceRadius = outerRadius - wallThickness;
 innerRaceRadius = innerRadius + wallThickness;
 
 
-numRollers = 7;
+numRollers = 6;
 
 rollerRaceLipWidth = 1;
 
@@ -36,8 +51,18 @@ rollerBaseHeight = raceLipHeight + tolerance;
 
 rollerInnerRadius = rollerRaceRadius - rollerRaceLipWidth - wallThickness;
 
+rollerMidsectionHeight = width - raceLipHeight*2 - tolerance*2;
+
+rollerTopHeight = rollerBaseHeight + rollerMidsectionHeight + rollerRaceLipHeight;
+
+rollerHoleRadius = rollerRaceRadius - rollerRaceLipWidth - wallThickness;
+
 
 retainerBaseHeight = 0.6;
+
+retainerBottomHeight = rollerBaseHeight - retainerBaseHeight - tolerance*2;
+
+retainerUpperHeight = rollerTopHeight + retainerBaseHeight + tolerance*2;
 
 
 
@@ -64,11 +89,28 @@ module OuterHalf(){
 }
 
 module Outer(){
-    OuterHalf();
+    difference(){
+        union(){
+            OuterHalf();
+            
+            mirror([0,0,1])
+            translate([0,0,-width])
+            OuterHalf();
+        }
+        
+        // hole to slide in roller
+        translate([rollerCentreDistance,0,width/2])
+        cylinder(width, rollerRaceRadius, rollerRaceRadius);
+        
+    }
     
-    mirror([0,0,1])
-    translate([0,0,-width])
-    OuterHalf();
+    // bottom
+    difference(){
+        cylinder(wallThickness, outerRadius-raceLipWidth, outerRadius-raceLipWidth);
+        
+        translate([0,0,-0.01])
+        cylinder(wallThickness+0.02, outerRadius-raceLipWidth-wallThickness*3, outerRadius-raceLipWidth-wallThickness*3);
+    }
 }
 
 module InnerHalf(){
@@ -95,16 +137,30 @@ module InnerHalf(){
 }
 
 module Inner(){
-    InnerHalf();
+    difference(){
+        union(){
+            InnerHalf();
+            
+            mirror([0,0,1])
+            translate([0,0,-width])
+            InnerHalf();
+        }
+        
+        // hole to slide in roller
+        translate([rollerCentreDistance,0,width/2])
+        cylinder(width, rollerRaceRadius, rollerRaceRadius);
+    }
     
-    mirror([0,0,1])
-    translate([0,0,-width])
-    InnerHalf();
+    // bottom
+    difference(){
+        cylinder(wallThickness, innerRadius+raceLipWidth, innerRadius+raceLipWidth);
+        
+        translate([0,0,-0.01])
+        cylinder(wallThickness+0.02, innerRadius, innerRadius);
+    }
 }
 
-module Roller(){
-    rollerMidsectionHeight = width - raceLipHeight*2 - tolerance*2;
-    
+module Roller(){   
     //lip
     translate([0,0,rollerMidsectionHeight])
     difference(){
@@ -127,9 +183,8 @@ module Roller(){
         cylinder(wallThickness, rollerRaceRadius, rollerRaceRadius);
         
         translate([0,0,-0.01])
-        cylinder(wallThickness+0.02, rollerRaceRadius - rollerRaceLipWidth - wallThickness, rollerRaceRadius - rollerRaceLipWidth - wallThickness);
+        cylinder(wallThickness+0.02, rollerHoleRadius, rollerHoleRadius);
     }
-    
 }
 
 module Rollers(){
@@ -140,26 +195,33 @@ module Rollers(){
         Roller();
 }
 
-module RetainerClip(){
+module RetainerClip(isTop=false){
     clipWidth = wallThickness * 3;
-    midClipHeight = rollerRaceLipWidth/cos(45);
+    midClipHeight = rollerRaceLipWidth/cos(45) + rollerInnerRadius/3;
     
-    //top
-
     //mid 
-    translate([-midClipHeight/2,0,retainerBaseHeight+midClipHeight+wallThickness])
-    rotate([0,-45,0])
-    cube([clipWidth,clipWidth,midClipHeight], center=true);
+    if (isTop){
+        translate([0,0,retainerBaseHeight+wallThickness])
+        rotate([0,45,0])
+        translate([0,0,midClipHeight/2])
+        cube([clipWidth,clipWidth,midClipHeight], center=true);
+    }else{
+            translate([0,0,retainerBaseHeight+wallThickness])
+        rotate([0,-45,0])
+        translate([0,0,midClipHeight/2])
+        cube([clipWidth,clipWidth,midClipHeight], center=true);
+    }
+    
     
     baseWidth = wallThickness * 3;
-    baseLength = 2*sqrt(pow(rollerInnerRadius -tolerance*2, 2) - pow(baseWidth, 2));
-    baseHeight = 2;
+    baseLength = 2*sqrt(pow(rollerHoleRadius -tolerance*3, 2) - pow(baseWidth/2, 2));
+    baseHeight = wallThickness*2 + tolerance*2;
     // base
     translate([0,0,retainerBaseHeight+baseHeight/2])
     cube([baseWidth, baseLength, baseHeight], center=true);
 }
 
-module Retainer(){
+module Retainer(isTop=false){
         difference(){
         cylinder(retainerBaseHeight,rollerCentreDistance+1,rollerCentreDistance+1);
         translate([0,0,-1])
@@ -169,20 +231,31 @@ module Retainer(){
     for (angle=[0:360/numRollers:360])
         rotate([0,0,angle])
         translate([rollerCentreDistance,0,0])
-        RetainerClip();
+        RetainerClip(isTop);
+}
+
+module all(){
+    Outer();
+    Inner();
+    Rollers();
+    translate([0,0,retainerBottomHeight])
+    Retainer();
+    
+    translate([0,0,retainerUpperHeight])
+    mirror([0,0,1])
+    Retainer(isTop=true);
+}
+
+module section(){
+    difference(){
+        all();
+        
+        translate([0,-500,-0.01])
+        cube([500,500,500]);
+    }
 }
 
 
-
-//Outer();
-
-//Inner();
-
-//Roller();
-
-//Rollers();
-
-Retainer();
 
 
 
