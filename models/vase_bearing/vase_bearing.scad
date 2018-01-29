@@ -1,23 +1,27 @@
-//All();
-//Section();
-//Outer();
-//Inner();
-//Roller();
-//Rollers();
-Retainer();
+/* [Basic] */
 
-$fn = 200;
+// Which part would you like to see?
+part = "section"; // [all:Everything, outer: Outer Race, inner:Inner Race, roller:One Roller, retainer: One Retainer, section:Cross section]
 
+// Render quality
+$fn=200; // [20:Fast viewing, 200:Quality printing]
+
+// Outer Radius
 outerRadius = 11;
 
-innerRadius = 3.5;
+// Inner Radius
+innerRadius = 4;
 
+// Thickness of walls
 wallThickness = 0.45;
 
-width = 8;
+// Width
+width = 7;
 
+// Tolerance (extra space between rollers and races)
 tolerance = 0.1;
 
+/* [Advanced: Race Lip] */
 
 raceUpperLipWidth = 1.2;
 
@@ -27,13 +31,15 @@ raceLowerLipWidth = 0.8;
 
 raceLowerLipHeight = raceLowerLipWidth * tan(60);
 
+/* [Advanced: Outer Race] */
 
 outerRaceRadius = outerRadius - wallThickness;
 
-
+/* [Advanced: Inner Race] */
 
 innerRaceRadius = innerRadius + wallThickness;
 
+/* [Advanced: Rollers] */
 
 rollerRaceLipWidth = 1.4;
 
@@ -53,16 +59,27 @@ rollerTopHeight = rollerBaseHeight + rollerMidsectionHeight + rollerRaceLipHeigh
 
 rollerHoleRadius = rollerRaceRadius - rollerRaceLipWidth - wallThickness;
 
+// Number of rollers
 numRollers = floor(PI * rollerCentreDistance * 2 / (rollerRaceRadius*2 + tolerance * 4));
 
 echo (numRollers=numRollers);
 
+/* [Advanced: Retainer] */
 
 retainerBaseHeight = 0.4;
 
 retainerBottomHeight = rollerBaseHeight - retainerBaseHeight - tolerance*2;
 
 retainerUpperHeight = rollerTopHeight + retainerBaseHeight + tolerance*2;
+
+
+//All();
+//Section();
+//Outer();
+//Inner();
+//Roller();
+//Rollers();
+//Retainer();
 
 
 module Ring(height, lowerRadius, upperRadius, thickness){
@@ -168,7 +185,7 @@ module Rollers(){
 
 module RetainerClip(){
     clipWidth = wallThickness * 3;
-    midClipHeight = (rollerRaceRadius-wallThickness)/cos(45)/1.8;
+    midClipHeight = (rollerRaceRadius-wallThickness)/cos(45)/2.2;
     
     //mid 
     translate([0,0,retainerBaseHeight+wallThickness + tolerance*2])
@@ -214,7 +231,23 @@ module Section(){
     }
 }
 
+module PrintPart(){
+    if (part == "all") {
+		All();
+	} else if (part == "outer") {
+		Outer();
+	}else if (part == "inner") {
+		Inner();
+    }else if (part == "roller") {
+		Roller();
+    }else if (part == "retainer") {
+		Retainer();
+    }else if (part == "section") {
+		Section();
+	}
+}
 
+PrintPart();
 
 
 
