@@ -23,10 +23,10 @@ shaftLength = 110;
 //translate([90,0,0])
 //BearingHolder();
 //
-//translate([-80,30,0])
-//Cam();
+translate([-80,30,0])
+Cam();
 
-cube([10,10,30]);
+//cube([10,10,30]);
 
 module Bearing()
 {
@@ -104,16 +104,38 @@ module MagnetHolder(){
 }
 
 module CoilHolder(){
-    cube([30,20,30]);
+    difference(){
+        union(){
+            cube([30,20,30]);
+            
+            translate([-10,0,0])
+            cube([50,5,30]);
+            
+            translate([-10,2.5,0])
+            cylinder(30,2.5,2.5);
+            
+            translate([40,2.5,0])
+            cylinder(30,2.5,2.5);
+            
+            translate([-10,22.5,0])
+            cylinder(30,2.5,2.5);
+            
+            translate([40,22.5,0])
+            cylinder(30,2.5,2.5);
+            
+            translate([-10,20,0])
+            cube([50,5,30]);
+            
+            rotate([45,0,0])
+            cube([30,30*cos(45),30*cos(45)]);
+        }
     
-    translate([-10,0,0])
-    cube([50,5,30]);
-    
-    translate([-10,20,0])
-    cube([50,5,30]);
-    
-    rotate([45,0,0])
-    cube([30,30*cos(45),30*cos(45)]);
+        translate([4,4.5,-1])
+        cube([22,15.5,32]);
+        
+        translate([4,-16,-1])
+        cube([22,16,32]);
+    }
 }
 
 module BearingHolder(){
@@ -128,14 +150,21 @@ module BearingHolder(){
         cube([70, 16, 13]);
     }
     
-    translate([20,13,0])
-    cylinder(4, 30, 30);
+    difference(){
+        translate([20,13,0])
+        cylinder(4, 30, 30);
+        
+        translate([25,13,-1])
+        cylinder(6, 18, 18);
+        
+    }
 }
 
-module Cam(){
+module Cam(angle=0){
     Slide(5);
     
     difference(){
+        rotate([0,0,angle])
         scale([1,0.8,1])
         {
             translate([0,0,2.5])
