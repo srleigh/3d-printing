@@ -62,15 +62,12 @@ module Armature(length=20){
         cube([10.5,10.5,45+0.04], center=true);
         
         for (angle = [0:360/3:360]){
-                rotate([0,0,angle + 360/6]){
-                    translate([31,0,length/2-0.01])
-                    cube([35, 14, length+0.04], center=true);
-                }
+            rotate([0,0,angle + 360/6]){
+                translate([31,0,length/2-0.01])
+                cube([35, 14, length+0.04], center=true);
             }
+        }
     }
-    
-    
-    
 }
 
 module Commutator(){
@@ -106,10 +103,10 @@ module Commutator(){
 
 module Bearing(){
     difference(){
-        cylinder(7, 11, 11);
+        cylinder(15, 18, 18);
         
         translate([0, 0, -0.01])
-        cylinder(7.02, 4, 4);
+        cylinder(15.02, 4.5, 4.5);
     }
 }
 
@@ -122,10 +119,10 @@ module ToothedShaftHalf(){
 
     // taper
     translate([0, 0, 15])
-    cylinder(5, 3.8, 5);
+    cylinder(5, 4.2, 5);
     
     // bottom
-    cylinder(15, 3.8, 3.8);
+    cylinder(15, 4.2, 4.2);
 }
 
 module ToothedShaft(){
@@ -171,66 +168,69 @@ module MagnetHolderConstruction(){
     cube([23.6,6.1,25]);
 }
 
-module MagnetHolder(){
-    Slide(10);
-    
-    translate([8.31,0,5])
-    difference(){
-        cube([6.1,12.1,10], center=true);
-        translate([0,0,-0.01])
-        cube([4.1,10.1,10.04], center=true);   
-    } 
-    
-    translate([-8.31,0,5])
-    difference(){
-        cube([6.1,12.1,10], center=true);
-        translate([0,0,-0.01])
-        cube([4.1,10.1,10.04], center=true);   
-    } 
-    
-    translate([0,8.31,5])
-    difference(){
-        cube([12.1, 6.1,10], center=true);
-        translate([0,0,-0.01])
-        cube([10.1, 4.1,10.04], center=true);   
-    } 
-    
-    translate([0,-8.31,5])
-    difference(){
-        cube([12.1, 6.1,10], center=true);
-        translate([0,0,-0.01])
-        cube([10.1, 4.1,10.04], center=true);   
-    } 
-    
-}
+//module MagnetHolder(){
+//    Slide(10);
+//    
+//    translate([8.31,0,5])
+//    difference(){
+//        cube([6.1,12.1,10], center=true);
+//        translate([0,0,-0.01])
+//        cube([4.1,10.1,10.04], center=true);   
+//    } 
+//    
+//    translate([-8.31,0,5])
+//    difference(){
+//        cube([6.1,12.1,10], center=true);
+//        translate([0,0,-0.01])
+//        cube([4.1,10.1,10.04], center=true);   
+//    } 
+//    
+//    translate([0,8.31,5])
+//    difference(){
+//        cube([12.1, 6.1,10], center=true);
+//        translate([0,0,-0.01])
+//        cube([10.1, 4.1,10.04], center=true);   
+//    } 
+//    
+//    translate([0,-8.31,5])
+//    difference(){
+//        cube([12.1, 6.1,10], center=true);
+//        translate([0,0,-0.01])
+//        cube([10.1, 4.1,10.04], center=true);   
+//    } 
+//    
+//}
 
 
 module BearingHolder(){
-    translate([0,0,40])
-    rotate([0,90,0])
     difference(){
-        cube([40,26,11]);
-        translate([-33,(26-22.4)/2,(11-7.4)/2])
-        cube([50, 22.4, 7.4]);
+        translate([0, -20, 0])
+        cube([20,40,40]);
         
-        translate([-33,(26-16)/2,-1])
-        cube([50, 16, 13]);
+        translate([2, -18, -1])
+        cube([16, 18.2 *2, 50]);
+        
+        translate([-1, -15, -1])
+        cube([22, 30, 50]);
     }
     
+    translate([0,-2.5,0])
+    cube([20,5,16]);
+    
     //base support
-    translate([0,-38,0])
+    translate([0,-38-13,0])
     cube([5,100,5]);
     
-    translate([-70,40,0])
+    translate([-70,40-13,0])
     cube([70,6.1,5]);
     
-    translate([-70,-20,0])
+    translate([-70,-20-13,0])
     cube([70,6.1,5]);
     
 }
 
 module BearingHolders(){
-    translate([10,26,0])
+    translate([10,0,0])
     rotate([0,0,180])
     BearingHolder();
     
@@ -241,7 +241,7 @@ module BearingHolders(){
 
 
 module BaseAssembly(){
-    translate([0,-13,0])
+    translate([0,0,0])
     BearingHolders();
     
     translate([74.5,30,25])
@@ -255,8 +255,6 @@ module BaseAssembly(){
     
     translate([12,-10,0])
     SpringRingHolder();
-    
-     
 }
 
 module SpringRing(){
@@ -279,22 +277,23 @@ module SpringRing(){
 module SpringRingHolder(){
     difference(){
         cube([15,20,30]);
-        translate([0,10,34])
+        translate([0,10,34.6])
         rotate([0,90,0])
         cylinder(50,22,22);
     }
     
-    translate([-10,15,0])
+    translate([-5,15,0])
     cube([10,5 ,5]);
     
-    translate([-10,-0,0])
-    cube([10,5 ,5]);
+    translate([-5,-0,0])
+    cube([10, 5, 5]);
 }
 
 
 module Assembly(){
     translate([0,0,35])
     rotate([0,90,0]){
+        translate([0,0,-7])
         Bearing();
         
         translate([0,0,-6])
