@@ -13,24 +13,14 @@ paperclipRadius = 0.5;
 
 //ToothedShaft();
 
-//translate([20,0,0])
 //Slide();
-//
-//translate([-40,0,0])
-//MagnetHolder();
-//
-//translate([-75,100,0])
+
 Assembly();
-//
-//
-//translate([0,-90,0])
-//CoilHolder();
-//
+
 //translate([90,0,0])
 //BearingHolder();
-//
-//translate([-80,30,0])
-//Cam();
+
+//MagnetHolderConstruction();
 
 //cube([10,10,30]);
 
@@ -54,8 +44,6 @@ module Armature(length=20){
                 translate([0,0,-0.01])
                 cylinder(length+0.02, 23, 23);
             }
-            
-            
         }
         
         //centre hole
@@ -168,39 +156,13 @@ module MagnetHolderConstruction(){
     cube([23.6,6.1,25]);
 }
 
-//module MagnetHolder(){
-//    Slide(10);
-//    
-//    translate([8.31,0,5])
-//    difference(){
-//        cube([6.1,12.1,10], center=true);
-//        translate([0,0,-0.01])
-//        cube([4.1,10.1,10.04], center=true);   
-//    } 
-//    
-//    translate([-8.31,0,5])
-//    difference(){
-//        cube([6.1,12.1,10], center=true);
-//        translate([0,0,-0.01])
-//        cube([4.1,10.1,10.04], center=true);   
-//    } 
-//    
-//    translate([0,8.31,5])
-//    difference(){
-//        cube([12.1, 6.1,10], center=true);
-//        translate([0,0,-0.01])
-//        cube([10.1, 4.1,10.04], center=true);   
-//    } 
-//    
-//    translate([0,-8.31,5])
-//    difference(){
-//        cube([12.1, 6.1,10], center=true);
-//        translate([0,0,-0.01])
-//        cube([10.1, 4.1,10.04], center=true);   
-//    } 
-//    
-//}
-
+module MagnetHolderHolder(){
+    translate([0,-3,-25])
+    cube([5,6.1,30]);
+    
+    translate([29.5,-3,-25])
+    cube([5,6.1,30]);
+}
 
 module BearingHolder(){
     difference(){
@@ -236,23 +198,18 @@ module BearingHolders(){
     
     translate([99,0,0])
     BearingHolder();
-    
 }
 
 
 module BaseAssembly(){
-    translate([0,0,0])
     BearingHolders();
     
-    translate([74.5,30,25])
-    MagnetHolderConstruction();
+    translate([63,-30,25])
+    MagnetHolderHolder();
     
-    
-    translate([74.5,-30,25])
-    rotate([0,0,0])
-    MagnetHolderConstruction();
-    
-    
+    translate([63, 30,25])
+    MagnetHolderHolder();
+
     translate([12,-10,0])
     SpringRingHolder();
 }
@@ -311,9 +268,14 @@ module Assembly(){
         translate([0,0,shaftLength-19])
         Bearing();   
     }
-    
-    
+
     BaseAssembly();
+    
+    translate([74.5,30,25])
+    MagnetHolderConstruction();
+    
+    translate([74.5,-30,25])
+    MagnetHolderConstruction();
 }
 
 
