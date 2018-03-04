@@ -1,25 +1,25 @@
 /* [Basic] */
 
 // Which part would you like to see?
-part = "section"; // [all:Everything, outer: Outer Race, inner:Inner Race, roller:One Roller, retainer: One Retainer, section:Cross section]
+part = "retainer"; // [all:Everything, outer: Outer Race, inner:Inner Race, roller:One Roller, retainer: One Retainer, section:Cross section]
 
 // Render quality
 $fn=200; // [20:Fast viewing, 200:Quality printing]
 
 // Outer Radius
-outerRadius = 11;
+outerRadius = 13;
 
 // Inner Radius
-innerRadius = 4;
+innerRadius = 5.5;
 
 // Thickness of walls
 wallThickness = 0.45;
 
 // Width
-width = 7;
+width = 7.5;
 
 // Tolerance (extra space between rollers and races)
-tolerance = 0.1;
+tolerance = 0.15;
 
 /* [Advanced: Race Lip] */
 
@@ -164,15 +164,16 @@ module Roller(){
     }
     
     //mid section
+    translate([0,0,wallThickness])
     difference(){
-        cylinder(rollerMidsectionHeight, rollerRaceRadius, rollerRaceRadius);
+        cylinder(rollerMidsectionHeight-wallThickness, rollerRaceRadius, rollerRaceRadius);
         
         translate([0,0,-0.01])
-        cylinder(rollerMidsectionHeight+0.02, rollerRaceRadius - wallThickness, rollerRaceRadius - wallThickness);
+        cylinder(rollerMidsectionHeight-wallThickness+0.02, rollerRaceRadius - wallThickness, rollerRaceRadius - wallThickness);
     }
     
     //bottom
-    Ring(wallThickness, rollerRaceRadius, rollerRaceRadius, rollerRaceRadius - rollerHoleRadius);
+    Ring(wallThickness, rollerRaceRadius-0.25, rollerRaceRadius, rollerRaceRadius-0.25 - rollerHoleRadius);
 }
 
 module Rollers(){
