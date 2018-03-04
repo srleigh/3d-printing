@@ -1,40 +1,104 @@
 
-$fn = 200;
+$fn = 50;
 
-shaftLength = 110;
+shaftLength = 120;
+
+paperclipRadius = 0.5;
+
+//Armature();
+
+//Commutator();
+
+SpringRing();
 
 //Bearing();
 
 //ToothedShaft();
 
-//translate([20,0,0])
 //Slide();
-//
-//translate([-40,0,0])
-//MagnetHolder();
-//
-//translate([-75,100,0])
+
 //Assembly();
-//
-//
-//translate([0,-90,0])
-//CoilHolder();
-//
+
 //translate([90,0,0])
 //BearingHolder();
-//
-translate([-80,30,0])
-Cam();
+
+//MagnetHolderConstruction();
 
 //cube([10,10,30]);
 
-module Bearing()
-{
+//BaseAssembly();
+
+module Armature(length=20){
+    
     difference(){
-        cylinder(7, 11, 11);
+        union(){
+            translate([0,0,length/2])
+            cylinder(length,12,12, center=true);
+            
+            for (angle = [0:360/3:360]){
+                rotate([0,0,angle]){
+                    translate([11,0,length/2])
+                    cube([25, 14, length], center=true);
+                }
+            }
+            
+            //outer ring
+            difference(){
+                cylinder(length, 25,25);
+                translate([0,0,-0.01])
+                cylinder(length+0.02, 23, 23);
+            }
+        }
+        
+        //centre hole
+        cube([10.5,10.5,45+0.04], center=true);
+        
+        for (angle = [0:360/3:360]){
+            rotate([0,0,angle + 360/6]){
+                translate([31,0,length/2-0.01])
+                cube([35, 14, length+0.04], center=true);
+            }
+        }
+    }
+}
+
+module Commutator(){
+    difference(){
+        union(){
+            
+            cylinder(5,11,11);
+            
+            translate([0,0,5])
+            cylinder(5,11,9);
+                    
+            translate([0,0,10])
+            cylinder(5,9,11);
+                    
+            translate([0,0,15])
+            cylinder(5,11,11);
+        }
+        cube([10.5,10.5,45+0.04], center=true);
+        
+        for (angle = [0:360/6:360]){
+            rotate([0,0,angle])
+            translate([11,0,0])
+            cylinder(25, 0.5, 0.5);
+            
+            
+            rotate([0,0,angle])
+            translate([11,0,1.2])
+            rotate([0,-90,0])
+            cylinder(25, 0.75, 0.75);
+        }
+    }
+}
+
+module Bearing(){
+    difference(){
+        cylinder(15, 18, 18);
         
         translate([0, 0, -0.01])
-        cylinder(7.02, 4, 4);
+        cylinder(15.02, 4.5, 4.5);
     }
 }
 
@@ -47,10 +111,10 @@ module ToothedShaftHalf(){
 
     // taper
     translate([0, 0, 15])
-    cylinder(5, 3.8, 5);
+    cylinder(5, 4.2, 5);
     
     // bottom
-    cylinder(15, 3.8, 3.8);
+    cylinder(15, 4.2, 4.2);
 }
 
 module ToothedShaft(){
@@ -70,160 +134,152 @@ module Slide(height=20){
     } 
 }
 
-module MagnetHolder(){
-    Slide(10);
-    
-    translate([8.31,0,5])
-    difference(){
-        cube([6.1,12.1,10], center=true);
-        translate([0,0,-0.01])
-        cube([4.1,10.1,10.04], center=true);   
-    } 
-    
-    translate([-8.31,0,5])
-    difference(){
-        cube([6.1,12.1,10], center=true);
-        translate([0,0,-0.01])
-        cube([4.1,10.1,10.04], center=true);   
-    } 
-    
-    translate([0,8.31,5])
+module MagnetHolder2(){
+    translate([0,0,5])
     difference(){
         cube([12.1, 6.1,10], center=true);
         translate([0,0,-0.01])
         cube([10.1, 4.1,10.04], center=true);   
     } 
-    
-    translate([0,-8.31,5])
-    difference(){
-        cube([12.1, 6.1,10], center=true);
-        translate([0,0,-0.01])
-        cube([10.1, 4.1,10.04], center=true);   
-    } 
-    
 }
 
-module CoilHolder(){
-    difference(){
-        union(){
-            cube([30,20,30]);
-            
-            translate([-10,0,0])
-            cube([50,5,30]);
-            
-            translate([-10,2.5,0])
-            cylinder(30,2.5,2.5);
-            
-            translate([40,2.5,0])
-            cylinder(30,2.5,2.5);
-            
-            translate([-10,22.5,0])
-            cylinder(30,2.5,2.5);
-            
-            translate([40,22.5,0])
-            cylinder(30,2.5,2.5);
-            
-            translate([-10,20,0])
-            cube([50,5,30]);
-            
-            rotate([45,0,0])
-            cube([30,30*cos(45),30*cos(45)]);
-        }
+module MagnetHolderConstruction(){
+    MagnetHolder2();
     
-        translate([4,4.5,-1])
-        cube([22,15.5,32]);
+    translate([11.5,0,0])
+    MagnetHolder2();
+    
+    translate([0,0,10]){
+        MagnetHolder2();
         
-        translate([4,-16,-1])
-        cube([22,16,32]);
+        translate([11.5,0,0])
+        MagnetHolder2();
     }
+    
+    translate([-6.0,-3,-25])
+    cube([23.6,6.1,25]);
+}
+
+module MagnetHolderHolder(){
+    translate([0,-3,-25])
+    cube([5,6.1,30]);
+    
+    translate([29.5,-3,-25])
+    cube([5,6.1,30]);
 }
 
 module BearingHolder(){
-    translate([0,0,80])
-    rotate([0,90,0])
     difference(){
-        cube([80,26,11]);
-        translate([-11,(26-22.2)/2,(11-7.2)/2])
-        cube([70, 22.2, 7.2]);
+        translate([0, -20, 0])
+        cube([20,40,40]);
         
-        translate([-11,(26-16)/2,-1])
-        cube([70, 16, 13]);
+        translate([2, -18, -1])
+        cube([16, 18.2 *2, 50]);
+        
+        translate([-1, -15, -1])
+        cube([22, 30, 50]);
     }
     
-    difference(){
-        translate([20,13,0])
-        cylinder(4, 30, 30);
-        
-        translate([25,13,-1])
-        cylinder(6, 18, 18);
-        
-    }
+    translate([0,-2.5,0])
+    cube([20,5,16]);
+    
+    //base support
+    translate([0,-38-13,0])
+    cube([5,100,5]);
+    
+    translate([-70,40-13,0])
+    cube([70,6.1,5]);
+    
+    translate([-70,-20-13,0])
+    cube([70,6.1,5]);
+    
 }
 
-module Cam(angle=0){
-    Slide(5);
-    
-    difference(){
-        rotate([0,0,angle])
-        scale([1,0.8,1])
-        {
-            translate([0,0,2.5])
-            cylinder(2.5,19,20);
-            
-            cylinder(2.5,20,19);
-        }
-        
-        translate([-6,-6,-1])
-        cube([12,12,20]);
-    }
-}
-
-module Assembly(){
-    translate([0,0,40])
-    rotate([0,90,0]){
-        Bearing();
-        
-        translate([0,0,70])
-        MagnetHolder();
-        
-        ToothedShaft();
-        
-        translate([0,0,shaftLength-7])
-        Bearing();
-    }
-    
-    translate([50,-30,3])
-    rotate([45,0,0])
-    CoilHolder();
-    
-    translate([50,50,25])
-    rotate([-45,180,180])
-    CoilHolder();
-    
-    translate([10,13,0])
+module BearingHolders(){
+    translate([10,0,0])
     rotate([0,0,180])
     BearingHolder();
     
-    translate([100,-13,0])
+    translate([99,0,0])
     BearingHolder();
+}
+
+
+module BaseAssembly(){
+    BearingHolders();
     
-    translate([20,0,40])
-    rotate([0,90,0])
-    Cam();
+    translate([63,-30,25])
+    MagnetHolderHolder();
     
-    translate([25,0,40])
-    rotate([90,0,0])
-    rotate([0,90,0])
-    Cam();
+    translate([63, 30,25])
+    MagnetHolderHolder();
+
+    translate([12,-10,0])
+    SpringRingHolder();
+}
+
+module SpringRing(){
+    difference(){
+        cylinder(15,22,22);
+        translate([0,0,-0.5])
+        cylinder(16,20,20);
+        
+        //tiny holes
+        for (angle = [0:360/16:360]){           
+            translate([0,0,13])
+            rotate([0,0,angle])
+            rotate([90,0,0])
+            cylinder(50,0.75,0.75, center=true);
+        }
+    }
+}
+
+
+module SpringRingHolder(){
+    difference(){
+        cube([15,20,30]);
+        translate([0,10,34.6])
+        rotate([0,90,0])
+        cylinder(50,22,22);
+    }
     
-    translate([30,0,40])
-    rotate([0,90,0])
-    Cam();
+    translate([-5,15,0])
+    cube([10,5 ,5]);
     
-    translate([35,0,40])
-    rotate([90,0,0])
-    rotate([0,90,0])
-    Cam();
+    translate([-5,-0,0])
+    cube([10, 5, 5]);
+}
+
+
+module Assembly(){
+    translate([0,0,35])
+    rotate([0,90,0]){
+        translate([0,0,-7])
+        Bearing();
+        
+        translate([0,0,-6])
+        ToothedShaft();
+        
+        translate([0,0,22])
+        Commutator();
+        
+        translate([0,0,12])
+        SpringRing();
+        
+        translate([0,0,70])
+        Armature();
+        
+        translate([0,0,shaftLength-19])
+        Bearing();   
+    }
+
+    BaseAssembly();
+    
+    translate([74.5,30,25])
+    MagnetHolderConstruction();
+    
+    translate([74.5,-30,25])
+    MagnetHolderConstruction();
 }
 
 
